@@ -6,6 +6,7 @@ export const completeWithChatGPT = (
   endCallback: () => void,
   options: object = {}
 ) => {
+  let text = "";
   const req = https.request(
     {
       hostname: "api.openai.com",
@@ -23,8 +24,9 @@ export const completeWithChatGPT = (
           const data = chunk.toString().replace(/^data: /, "");
           try {
             JSON.parse(data).choices.forEach((choice) => {
-              tokenCallback(choice.text);
+              text += choice.text;
             });
+            tokenCallback(text);
           } catch (e) {}
         }
       });
@@ -34,14 +36,14 @@ export const completeWithChatGPT = (
 
   const body = JSON.stringify({
     model: "text-davinci-003",
-    prompt,
-    temperature: 0.6,
+    temperature: 0.9,
     max_tokens: 512,
     top_p: 1.0,
     frequency_penalty: 0.5,
     presence_penalty: 0.7,
     stream: true,
     ...options,
+    prompt,
   });
 
   req.on("error", (e) => {

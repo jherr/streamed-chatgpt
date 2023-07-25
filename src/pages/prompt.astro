@@ -15,7 +15,13 @@ const req = getRequest(requestId);
 <div
   hx-get={`/prompt?requestId=${requestId}`}
   hx-target="#result"
-  hx-trigger={req.done ? "" : "load delay:100ms"}
+  hx-trigger={req.pending ? "load delay:50ms" : ""}
+  class="italic"
 >
-  {req.completion}
+  <span>{req.completion}</span>
+  {
+    req.pending && (
+      <span class="ml-3 pl-1 w-1 h-5 bg-slate-700 border border-black" />
+    )
+  }
 </div>

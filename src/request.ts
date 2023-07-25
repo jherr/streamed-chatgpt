@@ -4,7 +4,7 @@ const requests: Record<
   string,
   {
     completion: string;
-    done: boolean;
+    pending: boolean;
   }
 > = {};
 
@@ -16,18 +16,16 @@ export const startRequest = async (prompt: string) => {
   const requestId = Math.random().toString(36).substring(2, 15);
   requests[requestId] = {
     completion: "",
-    done: false,
+    pending: true,
   };
 
   completeWithChatGPT(
-    `Funny saying about a ${prompt}`,
+    `Funny story about a ${prompt}`,
     (text) => {
-      requests[
-        requestId
-      ].completion = `${requests[requestId].completion}${text}`;
+      requests[requestId].completion = text;
     },
     () => {
-      requests[requestId].done = true;
+      requests[requestId].pending = false;
     }
   );
 
